@@ -1,0 +1,47 @@
+{
+	"bsonType": "object",
+	"required": ["senderId", "receiverId", "type", "title", "content"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"senderId": {
+			"bsonType": "string",
+			"description": "发送者ID"
+		},
+		"receiverId": {
+			"bsonType": "string",
+			"description": "接收者ID"
+		},
+		"type": {
+			"bsonType": "int",
+			"description": "消息类型：1-系统消息，2-应聘通知",
+			"minimum": 1,
+			"maximum": 2
+		},
+		"title": {
+			"bsonType": "string",
+			"description": "消息标题",
+			"maxLength": 100
+		},
+		"content": {
+			"bsonType": "string",
+			"description": "消息内容",
+			"maxLength": 1000
+		},
+		"isRead": {
+			"bsonType": "bool",
+			"description": "是否已读"
+		},
+		"createTime": {
+			"bsonType": "timestamp",
+			"description": "创建时间"
+		}
+	}
+} 

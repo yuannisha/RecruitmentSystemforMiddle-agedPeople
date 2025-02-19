@@ -1,0 +1,78 @@
+{
+	"bsonType": "object",
+	"required": ["title", "salary", "companyId", "companyName", "description", "requirement"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"title": {
+			"bsonType": "string",
+			"description": "职位名称",
+			"maxLength": 100
+		},
+		"salary": {
+			"bsonType": "string",
+			"description": "薪资范围",
+			"maxLength": 50
+		},
+		"companyId": {
+			"bsonType": "string",
+			"description": "企业ID"
+		},
+		"companyName": {
+			"bsonType": "string",
+			"description": "企业名称",
+			"maxLength": 100
+		},
+		"experience": {
+			"bsonType": "string",
+			"description": "工作经验要求",
+			"maxLength": 50
+		},
+		"education": {
+			"bsonType": "string",
+			"description": "学历要求",
+			"maxLength": 50
+		},
+		"location": {
+			"bsonType": "string",
+			"description": "工作地点",
+			"maxLength": 100
+		},
+		"address": {
+			"bsonType": "string",
+			"description": "详细地址",
+			"maxLength": 200
+		},
+		"description": {
+			"bsonType": "string",
+			"description": "职位描述",
+			"maxLength": 2000
+		},
+		"requirement": {
+			"bsonType": "string",
+			"description": "任职要求",
+			"maxLength": 2000
+		},
+		"status": {
+			"bsonType": "int",
+			"description": "状态：1-招聘中，2-已结束",
+			"minimum": 1,
+			"maximum": 2
+		},
+		"createTime": {
+			"bsonType": "timestamp",
+			"description": "创建时间"
+		},
+		"updateTime": {
+			"bsonType": "timestamp",
+			"description": "更新时间"
+		}
+	}
+} 

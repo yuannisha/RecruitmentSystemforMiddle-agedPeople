@@ -1,0 +1,56 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/login/login",
+    "pages/register/register",
+    "pages/profile/profile",
+    "pages/job/list",
+    "pages/job/detail",
+    "pages/job/post",
+    "pages/job/edit",
+    "pages/application/list",
+    "pages/message/list",
+    "pages/404/404",
+    "pages/company/detail",
+    "pages/user/detail"
+  ],
+  "window": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "中年人招聘",
+    "navigationBarBackgroundColor": "#007AFF",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#007AFF",
+    "borderStyle": "black",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/images/tabbar/home.png",
+        "selectedIconPath": "static/images/tabbar/home-active.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/job/list",
+        "iconPath": "static/images/tabbar/job.png",
+        "selectedIconPath": "static/images/tabbar/job-active.png",
+        "text": "职位"
+      },
+      {
+        "pagePath": "pages/message/list",
+        "iconPath": "static/images/tabbar/message.png",
+        "selectedIconPath": "static/images/tabbar/message-active.png",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "iconPath": "static/images/tabbar/profile.png",
+        "selectedIconPath": "static/images/tabbar/profile-active.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

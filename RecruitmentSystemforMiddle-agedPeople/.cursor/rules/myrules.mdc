@@ -1,0 +1,44 @@
+---
+description: description: project develop rules ```plaintext # Project Context 这是一个基于uniapp的中年人招聘系统的毕业设计，需在一天内完成核心功能开发以及页面设计，避免复杂后端逻辑。  # Coding Standards ## 技术规范 - 前端使用Vue3语法和模型，不要去使用vue2语法和模型 - 数据操作直接调用uniCloud API（禁止使用axios），前端只使用uniCloud.callFunction，后端需要其他数据表的数据时采用db.collection - 页面样式统一使用rpx单位适配多端 - 云数据库集合名必须为英文复数（如`spots`） - 使用Date.now()统一时间，并且前端显示时将时间格式化正常显示，不要用过时的vue.filter，要用vue3相关的功能 - 对于需要用到手机号验证码验证或者支付等实际情况，只需要进行模拟操作即可 - 对于整个项目的生命周期，采用vue3 export default语法和模型，并且使用onShow等与uniapp小程序相关的生命周期函数 - 对于所有使用到的方法都要适配vue3 - 确保项目能够完全在微信开发者工具上运行 - 对于需要用于用户验证（如某云函数中需要验证用户是否登录或者用户某ID权限是否合格问题，请采用前端传输后端校验的方式，不要使用各种uniId或者context等相关的东西） - 对于云函数的创建，统一采用某某模块+center，然后将其功能全部写在其center云函数中，需要时再增加某某center，便于管理 - 需要使用到图片的地方，能用svg画就用svg画，需要我提供的就直接写好路径，我会去把它们补充好的   ## 代码风格 - 变量命名：   - 普通变量：camelCase（如userInfo）   - 云数据库引用：db_前缀（如db_spots）   - 对于user相关的表以及函数命名，统一采用userInformation开头 - 方法命名：动词开头（如loadSpotList） - 组件文件：存放于/components目录  ## AI生成约束 - 不要使用任何组件，就自己进行各种设计 - 地图必须使用uni-app原生map组件 - 用户登录/注册采用自己设计的功能 - 异步操作需添加uni.showLoading提示  ## 禁止项 - 禁用eval()/document等Web专有API - 禁用第三方UI库（所有的ui自己进行设计） - 禁用复杂SQL查询（使用where简单过滤） - 云函数中禁止使用dbCmd.aggregate、groupby来实现功能，使用最简单明了的方式进行
+globs: *.js,*.vue
+---
+description: project develop rules
+```plaintext
+# Project Context
+这是一个基于uniapp的中年人招聘系统的毕业设计，需在一天内完成核心功能开发以及页面设计，避免复杂后端逻辑。
+
+# Coding Standards
+## 技术规范
+- 前端使用Vue3语法和模型，不要去使用vue2语法和模型
+- 数据操作直接调用uniCloud API（禁止使用axios），前端只使用uniCloud.callFunction，后端需要其他数据表的数据时采用db.collection
+- 页面样式统一使用rpx单位适配多端
+- 云数据库集合名必须为英文复数（如`spots`）
+- 使用Date.now()统一时间，并且前端显示时将时间格式化正常显示，不要用过时的vue.filter，要用vue3相关的功能
+- 对于需要用到手机号验证码验证或者支付等实际情况，只需要进行模拟操作即可
+- 对于整个项目的生命周期，采用vue3 export default语法和模型，并且使用onShow等与uniapp小程序相关的生命周期函数
+- 对于所有使用到的方法都要适配vue3
+- 确保项目能够完全在微信开发者工具上运行
+- 对于需要用于用户验证（如某云函数中需要验证用户是否登录或者用户某ID权限是否合格问题，请采用前端传输后端校验的方式，不要使用各种uniId或者context等相关的东西）
+- 对于云函数的创建，统一采用某某模块+center，然后将其功能全部写在其center云函数中，需要时再增加某某center，便于管理
+- 需要使用到图片的地方，能用svg画就用svg画，需要我提供的就直接写好路径，我会去把它们补充好的
+
+
+## 代码风格
+- 变量命名：
+  - 普通变量：camelCase（如userInfo）
+  - 云数据库引用：db_前缀（如db_spots）
+  - 对于user相关的表以及函数命名，统一采用userInformation开头
+- 方法命名：动词开头（如loadSpotList）
+- 组件文件：存放于/components目录
+
+## AI生成约束
+- 不要使用任何组件，就自己进行各种设计
+- 地图必须使用uni-app原生map组件
+- 用户登录/注册采用自己设计的功能
+- 异步操作需添加uni.showLoading提示
+
+## 禁止项
+- 禁用eval()/document等Web专有API
+- 禁用第三方UI库（所有的ui自己进行设计）
+- 禁用复杂SQL查询（使用where简单过滤）
+- 云函数中禁止使用dbCmd.aggregate、groupby来实现功能，使用最简单明了的方式进行

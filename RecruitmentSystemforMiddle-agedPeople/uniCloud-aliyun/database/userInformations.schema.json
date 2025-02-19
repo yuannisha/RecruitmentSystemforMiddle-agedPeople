@@ -1,0 +1,43 @@
+{
+	"bsonType": "object",
+	"required": ["phone", "password", "userType", "name"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"phone": {
+			"bsonType": "string",
+			"description": "手机号",
+			"pattern": "^1\\d{10}$"
+		},
+		"password": {
+			"bsonType": "string",
+			"description": "密码"
+		},
+		"userType": {
+			"bsonType": "int",
+			"description": "用户类型：1-求职者，2-企业",
+			"minimum": 1,
+			"maximum": 2
+		},
+		"name": {
+			"bsonType": "string",
+			"description": "姓名/企业名称",
+			"maxLength": 50
+		},
+		"createTime": {
+			"bsonType": "timestamp",
+			"description": "创建时间"
+		},
+		"updateTime": {
+			"bsonType": "timestamp",
+			"description": "更新时间"
+		}
+	}
+} 

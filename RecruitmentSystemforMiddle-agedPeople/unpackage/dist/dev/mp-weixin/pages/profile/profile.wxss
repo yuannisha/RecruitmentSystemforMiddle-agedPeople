@@ -1,0 +1,97 @@
+
+.profile-container {
+	min-height: 100vh;
+	background-color: #f8f8f8;
+	padding: 30rpx;
+}
+.login-tip {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 100rpx 0;
+}
+.login-tip text {
+	font-size: 32rpx;
+	color: #666;
+	margin-bottom: 40rpx;
+}
+.login-btn {
+	width: 240rpx;
+	height: 80rpx;
+	background-color: #007AFF;
+	color: #fff;
+	border-radius: 40rpx;
+	font-size: 32rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.user-card {
+	background-color: #fff;
+	border-radius: 20rpx;
+	padding: 40rpx;
+	margin-bottom: 30rpx;
+}
+.user-info {
+	display: flex;
+	align-items: center;
+}
+.avatar {
+	width: 120rpx;
+	height: 120rpx;
+	background-color: #007AFF;
+	border-radius: 60rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 30rpx;
+}
+.avatar-text {
+	font-size: 48rpx;
+	color: #fff;
+	font-weight: bold;
+}
+.info {
+	flex: 1;
+}
+.name {
+	font-size: 36rpx;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 10rpx;
+	display: block;
+}
+.type {
+	font-size: 28rpx;
+	color: #666;
+	background-color: #f5f5f5;
+	padding: 4rpx 16rpx;
+	border-radius: 20rpx;
+}
+.menu-list {
+	background-color: #fff;
+	border-radius: 20rpx;
+	overflow: hidden;
+}
+.menu-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 30rpx 40rpx;
+	border-bottom: 2rpx solid #f5f5f5;
+}
+.menu-item:last-child {
+	border-bottom: none;
+}
+.menu-title {
+	font-size: 32rpx;
+	color: #333;
+}
+.menu-title.logout {
+	color: #ff4757;
+}
+.menu-arrow {
+	font-size: 32rpx;
+	color: #999;
+}

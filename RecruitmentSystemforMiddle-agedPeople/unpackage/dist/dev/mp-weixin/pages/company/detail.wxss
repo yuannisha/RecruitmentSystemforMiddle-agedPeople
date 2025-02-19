@@ -1,0 +1,107 @@
+
+.detail-container {
+	min-height: 100vh;
+	background-color: #f8f8f8;
+	padding: 30rpx;
+}
+.company-card {
+	background-color: #fff;
+	padding: 30rpx;
+	border-radius: 20rpx;
+	margin-bottom: 30rpx;
+}
+.company-header {
+	margin-bottom: 20rpx;
+}
+.company-name {
+	font-size: 36rpx;
+	font-weight: bold;
+	color: #333;
+}
+.company-tags {
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 30rpx;
+}
+.tag {
+	font-size: 24rpx;
+	color: #666;
+	background-color: #f5f5f5;
+	padding: 8rpx 20rpx;
+	border-radius: 24rpx;
+	margin-right: 16rpx;
+	margin-bottom: 16rpx;
+}
+.company-desc {
+	border-top: 2rpx solid #f5f5f5;
+	padding-top: 30rpx;
+}
+.section-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 20rpx;
+	display: block;
+}
+.desc-text {
+	font-size: 28rpx;
+	color: #666;
+	line-height: 1.6;
+}
+.job-section {
+	background-color: #fff;
+	padding: 30rpx;
+	border-radius: 20rpx;
+}
+.section-header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 30rpx;
+}
+.job-count {
+	font-size: 28rpx;
+	color: #666;
+	margin-left: 10rpx;
+}
+.job-list {
+	margin-bottom: 30rpx;
+}
+.job-item {
+	padding: 30rpx;
+	border-radius: 20rpx;
+	background-color: #f8f8f8;
+	margin-bottom: 20rpx;
+}
+.job-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20rpx;
+}
+.job-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333;
+}
+.job-salary {
+	font-size: 32rpx;
+	color: #ff6b6b;
+	font-weight: bold;
+}
+.job-desc {
+	font-size: 26rpx;
+	color: #999;
+	line-height: 1.6;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}
+.load-more, .no-more {
+	text-align: center;
+	padding: 30rpx 0;
+}
+.load-more text, .no-more text {
+	font-size: 26rpx;
+	color: #999;
+}

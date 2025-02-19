@@ -1,0 +1,37 @@
+{
+	"bsonType": "object",
+	"required": ["userId", "jobId", "status"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"userId": {
+			"bsonType": "string",
+			"description": "求职者ID"
+		},
+		"jobId": {
+			"bsonType": "string",
+			"description": "职位ID"
+		},
+		"status": {
+			"bsonType": "int",
+			"description": "状态：1-待处理，2-已通过，3-已拒绝",
+			"minimum": 1,
+			"maximum": 3
+		},
+		"createTime": {
+			"bsonType": "timestamp",
+			"description": "创建时间"
+		},
+		"updateTime": {
+			"bsonType": "timestamp",
+			"description": "更新时间"
+		}
+	}
+} 
