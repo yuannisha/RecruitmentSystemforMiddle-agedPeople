@@ -25,7 +25,7 @@ exports.main = async (event, context) => {
 		case 'getCompanyList':
 			return await getCompanyList(data)
 		case 'getCurrentUser':
-			return await getCurrentUser()
+			return await getCurrentUser(data)
 		case 'getUserList':
 			return await getUserList(data)
 		default:
@@ -105,7 +105,9 @@ async function login(data) {
 			data: {
 				userId: userInfo._id,
 				userType: userInfo.userType,
-				name: userInfo.name
+				name: userInfo.name,
+				avatar: userInfo.avatar,
+				phone: userInfo.phone
 			}
 		}
 	}
@@ -124,20 +126,92 @@ async function login(data) {
 async function updateProfile(data) {
 	const { userId, ...updateData } = data
 	
-	updateData.updateTime = Date.now()
+	if (!userId) {
+		return {
+			code: 1,
+			msg: '缺少用户ID'
+		}
+	}
 	
-	const result = await db_userInformations.doc(userId).update(updateData)
-	
-	if (result.updated === 1) {
+	try {
+		// 获取用户当前信息
+		const userInfo = await db_userInformations.doc(userId).get()
+		if (!userInfo.data || userInfo.data.length === 0) {
+			return {
+				code: 1,
+				msg: '用户不存在'
+			}
+		}
+		
+		const currentUser = userInfo.data[0]
+		
+		// 如果要更新手机号，检查新手机号是否已被使用
+		if (updateData.phone && updateData.phone !== currentUser.phone) {
+			const existUser = await db_userInformations.where({
+				phone: updateData.phone
+			}).get()
+			
+			if (existUser.data.length > 0) {
+				return {
+					code: 1,
+					msg: '该手机号已被使用'
+				}
+			}
+		}
+		
+		// 如果要更新密码，检查旧密码是否正确
+		if (updateData.password && updateData.oldPassword) {
+			if (updateData.oldPassword !== currentUser.password) {
+				return {
+					code: 1,
+					msg: '旧密码不正确'
+				}
+			}
+			delete updateData.oldPassword
+		}
+		
+		// 根据用户类型验证字段
+		if (currentUser.userType === 1) {
+			// 求职者用户
+			const allowedFields = [
+				'avatar', 'gender', 'age', 'education', 
+				'workExperience', 'skills', 'introduction',
+				'phone', 'password', 'name'
+			]
+			Object.keys(updateData).forEach(key => {
+				if (!allowedFields.includes(key) || updateData[key] === "") {
+					delete updateData[key]
+				}
+			})
+		} else {
+			// 企业用户
+			const allowedFields = [
+				'avatar', 'registeredCapital', 'scale', 
+				'companyDescription', 'companyImages',
+				'phone', 'password', 'name'
+			]
+			Object.keys(updateData).forEach(key => {
+				if (!allowedFields.includes(key) || updateData[key] === "") {
+					delete updateData[key]
+				}
+			})
+		}
+		
+		// 更新用户信息
+		await db_userInformations.doc(userId).update({
+			...updateData,
+			updateTime: Date.now()
+		})
+		
 		return {
 			code: 0,
 			msg: '更新成功'
 		}
-	}
-	
-	return {
-		code: -1,
-		msg: '更新失败'
+	} catch (e) {
+		return {
+			code: 1,
+			msg: '更新失败'
+		}
 	}
 }
 
@@ -271,9 +345,10 @@ async function getCompanyList(data) {
 }
 
 // 获取当前用户信息
-async function getCurrentUser() {
+async function getCurrentUser(data) {
 	try {
-		const userInfo = await db_userInformations.doc(context.userInfo.userId).get()
+		console.log("data",data)
+		const userInfo = await db_userInformations.doc(data.userInfo.userId).get()
 		
 		if (!userInfo.data || !userInfo.data.length) {
 			return {
@@ -292,6 +367,7 @@ async function getCurrentUser() {
 			data: userData
 		}
 	} catch (e) {
+		console.log("e",e)
 		return {
 			code: 1,
 			msg: '获取失败'

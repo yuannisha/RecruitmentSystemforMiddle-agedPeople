@@ -8,6 +8,7 @@ const _sfc_main = {
   },
   onShow() {
     this.userInfo = common_vendor.index.getStorageSync("userInfo");
+    common_vendor.index.__f__("log", "at pages/profile/profile.vue:81", "userInfo", this.userInfo);
   },
   methods: {
     goToLogin() {
@@ -44,6 +45,16 @@ const _sfc_main = {
           }
         }
       });
+    },
+    goToEdit() {
+      common_vendor.index.navigateTo({
+        url: "/pages/profile/edit"
+      });
+    },
+    goToCollectionList() {
+      common_vendor.index.navigateTo({
+        url: "/pages/collection/list"
+      });
     }
   }
 };
@@ -53,20 +64,27 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, !$data.userInfo ? {
     b: common_vendor.o((...args) => $options.goToLogin && $options.goToLogin(...args))
   } : common_vendor.e({
-    c: common_vendor.t($data.userInfo.name[0]),
-    d: common_vendor.t($data.userInfo.name),
-    e: common_vendor.t($data.userInfo.userType === 1 ? "求职者" : "企业"),
-    f: $data.userInfo.userType === 1
+    c: $data.userInfo.avatar
+  }, $data.userInfo.avatar ? {
+    d: $data.userInfo.avatar
+  } : {
+    e: common_vendor.t($data.userInfo.name[0])
+  }, {
+    f: common_vendor.t($data.userInfo.name),
+    g: common_vendor.t($data.userInfo.userType === 1 ? "求职者" : "企业"),
+    h: common_vendor.o((...args) => $options.goToEdit && $options.goToEdit(...args)),
+    i: $data.userInfo.userType === 1
   }, $data.userInfo.userType === 1 ? {
-    g: common_vendor.o((...args) => $options.goToApplicationList && $options.goToApplicationList(...args))
+    j: common_vendor.o((...args) => $options.goToApplicationList && $options.goToApplicationList(...args)),
+    k: common_vendor.o((...args) => $options.goToCollectionList && $options.goToCollectionList(...args))
   } : {}, {
-    h: $data.userInfo.userType === 2
+    l: $data.userInfo.userType === 2
   }, $data.userInfo.userType === 2 ? {
-    i: common_vendor.o((...args) => $options.goToPostJob && $options.goToPostJob(...args)),
-    j: common_vendor.o((...args) => $options.goToApplicationList && $options.goToApplicationList(...args))
+    m: common_vendor.o((...args) => $options.goToPostJob && $options.goToPostJob(...args)),
+    n: common_vendor.o((...args) => $options.goToApplicationList && $options.goToApplicationList(...args))
   } : {}, {
-    k: common_vendor.o((...args) => $options.goToMessageList && $options.goToMessageList(...args)),
-    l: common_vendor.o((...args) => $options.handleLogout && $options.handleLogout(...args))
+    o: common_vendor.o((...args) => $options.goToMessageList && $options.goToMessageList(...args)),
+    p: common_vendor.o((...args) => $options.handleLogout && $options.handleLogout(...args))
   }));
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);

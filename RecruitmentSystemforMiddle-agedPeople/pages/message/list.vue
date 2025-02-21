@@ -60,6 +60,7 @@ export default {
 		}
 	},
 	onShow() {
+		console.log("onShow")
 		this.userInfo = uni.getStorageSync('userInfo')
 		if (this.userInfo) {
 			this.resetList()
@@ -85,6 +86,7 @@ export default {
 			})
 			
 			try {
+				console.log("this.userInfo",this.userInfo)
 				const result = await uniCloud.callFunction({
 					name: 'messageCenter',
 					data: {
@@ -96,6 +98,7 @@ export default {
 						}
 					}
 				})
+				console.log("result",result)
 				
 				if (result.result.code === 0) {
 					const { list, total } = result.result.data
@@ -184,6 +187,10 @@ export default {
 					return '系统消息'
 				case 2:
 					return '应聘通知'
+				case 4:
+					return '面试邀请'
+				case 5:
+					return '来自企业的消息'	
 				default:
 					return '未知类型'
 			}

@@ -9,6 +9,7 @@ const db_jobs = db.collection('jobs')
 const db_applications = db.collection('applications')
 const db_userInformations = db.collection('userInformations')
 const db_messages = db.collection('messages')
+const db_collections = db.collection('favorites-job')
 
 exports.main = async (event, context) => {
 	const { action, data } = event
@@ -34,6 +35,14 @@ exports.main = async (event, context) => {
 			return await deleteJob(data)
 		case 'updateJob':
 			return await updateJob(data)
+		case 'collectJob':
+			return await collectJob(data)
+		case 'cancelCollect':
+			return await cancelCollect(data)
+		case 'getCollectionList':
+			return await getCollectionList(data)
+		case 'checkCollected':
+			return await checkCollected(data)
 		default:
 			return {
 				code: -1,
@@ -129,6 +138,10 @@ async function getJobDetail(data) {
 	const { jobId } = data
 	
 	const result = await db_jobs.doc(jobId).get()
+
+	const companyInfo = await db_userInformations.doc(result.data[0].companyId).get()
+
+	result.data[0].companyInfo = companyInfo.data[0]
 	
 	if (result.data && result.data.length > 0) {
 		return {
@@ -465,6 +478,248 @@ async function updateJob(data) {
 		return {
 			code: 1,
 			msg: '更新失败'
+		}
+	}
+}
+
+/**
+ * 收藏职位
+ * @param {Object} data 收藏信息
+ * @returns {Object} 收藏结果
+ */
+async function collectJob(data) {
+	const { userId, jobId } = data
+	
+	if (!userId || !jobId) {
+		return {
+			code: 1,
+			msg: '参数不完整'
+		}
+	}
+	
+	try {
+		// 检查是否已收藏
+		const existCollection = await db_collections.where({
+			userId,
+			jobId
+		}).get()
+		
+		if (existCollection.data.length > 0) {
+			return {
+				code: 1,
+				msg: '已收藏该职位'
+			}
+		}
+		
+		// 获取职位信息
+		const jobInfo = await db_jobs.doc(jobId).get()
+		if (!jobInfo.data || !jobInfo.data.length) {
+			return {
+				code: 1,
+				msg: '职位不存在'
+			}
+		}
+
+		// 获取当前用户信息
+		const userInfo = await db_userInformations.doc(userId).get()
+		if (!userInfo.data || !userInfo.data.length) {
+			return {
+				code: 1,
+				msg: '用户不存在'
+			}
+		}
+		// 添加收藏记录
+		await db_collections.add({
+			userId,
+			jobId,
+			createTime: Date.now()
+		})
+		
+		// 发送消息通知企业
+		const job = jobInfo.data[0]
+		await uniCloud.callFunction({
+			name: 'messageCenter',
+			data: {
+				action: 'sendMessage',
+				data: {
+					senderId: userId,
+					receiverId: job.companyId,
+					type: 3, // 收藏通知
+					title: '职位收藏通知',
+					content: `用户${userInfo.data[0].name}收藏了您发布的职位：${job.title}`
+				}
+			}
+		})
+		
+		return {
+			code: 0,
+			msg: '收藏成功'
+		}
+	} catch (e) {
+		return {
+			code: 1,
+			msg: '收藏失败'
+		}
+	}
+}
+
+/**
+ * 取消收藏
+ * @param {Object} data 收藏信息
+ * @returns {Object} 取消结果
+ */
+async function cancelCollect(data) {
+	const { userId, jobId } = data
+	
+	if (!userId || !jobId) {
+		return {
+			code: 1,
+			msg: '参数不完整'
+		}
+	}
+
+	// 获取职位信息
+	const jobInfo = await db_jobs.doc(jobId).get()
+	if (!jobInfo.data || !jobInfo.data.length) {
+		return {
+			code: 1,
+			msg: '职位不存在'
+		}
+	}
+
+	// 获取当前用户信息
+	const userInfo = await db_userInformations.doc(userId).get()
+	if (!userInfo.data || !userInfo.data.length) {
+		return {
+			code: 1,
+			msg: '用户不存在'
+		}
+	}
+	
+	try {
+		const result = await db_collections.where({
+			userId,
+			jobId
+		}).remove()
+		
+		if (result.deleted) {
+
+			// 发送消息通知企业
+		const job = jobInfo.data[0]
+		await uniCloud.callFunction({
+			name: 'messageCenter',
+			data: {
+				action: 'sendMessage',
+				data: {
+					senderId: userId,
+					receiverId: job.companyId,
+					type: 3, // 取消收藏通知
+					title: '职位取消收藏通知',
+					content: `用户${userInfo.data[0].name}取消收藏了您发布的职位：${job.title}`
+				}
+			}
+		})
+		
+			return {
+				code: 0,
+				msg: '取消收藏成功'
+			}
+		}
+		
+		return {
+			code: 1,
+			msg: '取消收藏失败'
+		}
+	} catch (e) {
+		console.log(e)
+		return {
+			code: 1,
+			msg: '取消收藏失败'
+		}
+	}
+}
+
+/**
+ * 获取收藏列表
+ * @param {Object} data 查询参数
+ * @returns {Object} 收藏列表
+ */
+async function getCollectionList(data) {
+	const { userId, page = 1, pageSize = 10 } = data
+	
+	if (!userId) {
+		return {
+			code: 1,
+			msg: '缺少用户ID'
+		}
+	}
+	
+	try {
+		const collections = await db_collections
+			.where({ userId })
+			.skip((page - 1) * pageSize)
+			.limit(pageSize)
+			.orderBy('createTime', 'desc')
+			.get()
+		
+		// 获取职位详情
+		const jobList = await Promise.all(
+			collections.data.map(async item => {
+				const jobInfo = await db_jobs.doc(item.jobId).get()
+				return jobInfo.data[0]
+			})
+		)
+		
+		const total = await db_collections.where({ userId }).count()
+		
+		return {
+			code: 0,
+			msg: '获取成功',
+			data: {
+				list: jobList,
+				total: total.total
+			}
+		}
+	} catch (e) {
+		return {
+			code: 1,
+			msg: '获取失败'
+		}
+	}
+}
+
+/**
+ * 检查职位是否已收藏
+ * @param {Object} data 查询参数
+ * @returns {Object} 检查结果
+ */
+async function checkCollected(data) {
+	const { userId, jobId } = data
+	
+	if (!userId || !jobId) {
+		return {
+			code: 1,
+			msg: '参数不完整'
+		}
+	}
+	
+	try {
+		const collection = await db_collections.where({
+			userId,
+			jobId
+		}).get()
+		
+		return {
+			code: 0,
+			msg: '获取成功',
+			data: {
+				collected: collection.data.length > 0
+			}
+		}
+	} catch (e) {
+		return {
+			code: 1,
+			msg: '获取失败'
 		}
 	}
 } 

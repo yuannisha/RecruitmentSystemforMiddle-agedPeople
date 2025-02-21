@@ -15,6 +15,7 @@ const _sfc_main = {
     this.companyId = options.id;
     this.loadCompanyInfo();
     this.loadJobList();
+    common_vendor.index.__f__("log", "at pages/company/detail.vue:103", "this.companyInfo", this.companyInfo);
   },
   onPullDownRefresh() {
     this.resetList();
@@ -114,30 +115,52 @@ const _sfc_main = {
       common_vendor.index.navigateTo({
         url: `/pages/job/detail?id=${jobId}`
       });
+    },
+    formatTime(timestamp) {
+      const date = new Date(timestamp);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    },
+    previewImage(current) {
+      common_vendor.index.previewImage({
+        urls: this.companyInfo.companyImages,
+        current
+      });
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: common_vendor.t($data.companyInfo.name),
-    b: $data.companyInfo.industry
-  }, $data.companyInfo.industry ? {
-    c: common_vendor.t($data.companyInfo.industry)
-  } : {}, {
-    d: $data.companyInfo.scale
+    a: $data.companyInfo.avatar
+  }, $data.companyInfo.avatar ? {
+    b: $data.companyInfo.avatar
+  } : {
+    c: common_vendor.t($data.companyInfo.name[0])
+  }, {
+    d: common_vendor.t($data.companyInfo.name),
+    e: $data.companyInfo.scale
   }, $data.companyInfo.scale ? {
-    e: common_vendor.t($data.companyInfo.scale)
+    f: common_vendor.t($data.companyInfo.scale)
   } : {}, {
-    f: $data.companyInfo.location
-  }, $data.companyInfo.location ? {
-    g: common_vendor.t($data.companyInfo.location)
+    g: $data.companyInfo.registeredCapital
+  }, $data.companyInfo.registeredCapital ? {
+    h: common_vendor.t($data.companyInfo.registeredCapital)
   } : {}, {
-    h: $data.companyInfo.description
-  }, $data.companyInfo.description ? {
-    i: common_vendor.t($data.companyInfo.description)
+    i: $data.companyInfo.companyDescription
+  }, $data.companyInfo.companyDescription ? {
+    j: common_vendor.t($data.companyInfo.companyDescription)
   } : {}, {
-    j: common_vendor.t($data.jobList.length),
-    k: common_vendor.f($data.jobList, (job, k0, i0) => {
+    k: $data.companyInfo.companyImages && $data.companyInfo.companyImages.length
+  }, $data.companyInfo.companyImages && $data.companyInfo.companyImages.length ? {
+    l: common_vendor.f($data.companyInfo.companyImages, (img, index, i0) => {
+      return {
+        a: index,
+        b: img,
+        c: common_vendor.o(($event) => $options.previewImage(index), index)
+      };
+    })
+  } : {}, {
+    m: common_vendor.t($data.jobList.length),
+    n: common_vendor.f($data.jobList, (job, k0, i0) => {
       return common_vendor.e({
         a: common_vendor.t(job.title),
         b: common_vendor.t(job.salary),
@@ -154,13 +177,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         h: common_vendor.t(job.location)
       } : {}, {
         i: common_vendor.t(job.description),
-        j: job._id,
-        k: common_vendor.o(($event) => $options.goToJobDetail(job._id), job._id)
+        j: common_vendor.t($options.formatTime(job.createTime)),
+        k: job._id,
+        l: common_vendor.o(($event) => $options.goToJobDetail(job._id), job._id)
       });
     }),
-    l: $data.hasMore
+    o: $data.hasMore
   }, $data.hasMore ? {
-    m: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args))
+    p: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args))
   } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);

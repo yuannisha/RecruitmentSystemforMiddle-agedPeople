@@ -6,14 +6,21 @@
 		<!-- 基本信息卡片 -->
 		<view class="info-card">
 			<view class="user-header">
-				<text class="user-name">{{ userInfo.name }}</text>
-				<text class="user-age" v-if="userInfo.age">{{ userInfo.age }}岁</text>
-			</view>
-			
-			<view class="user-tags">
-				<text class="tag" v-if="userInfo.education">{{ userInfo.education }}</text>
-				<text class="tag" v-if="userInfo.experience">{{ userInfo.experience }}</text>
-				<text class="tag" v-if="userInfo.location">{{ userInfo.location }}</text>
+				<view class="avatar-section">
+					<image v-if="userInfo.avatar" :src="userInfo.avatar" mode="aspectFill" class="avatar"></image>
+					<view v-else class="avatar-placeholder">{{ userInfo.name[0] }}</view>
+				</view>
+				<view class="basic-info">
+					<view class="name-age">
+						<text class="user-name">{{ userInfo.name }}</text>
+						<text class="user-age" v-if="userInfo.age">{{ userInfo.age }}岁</text>
+						<text class="gender" v-if="userInfo.gender">{{ userInfo.gender === 1 ? '男' : '女' }}</text>
+					</view>
+					<view class="user-tags">
+						<text class="tag" v-if="userInfo.education">{{ userInfo.education }}</text>
+						<text class="tag" v-if="userInfo.workExperience && userInfo.workExperience.length">{{ userInfo.workExperience.length }}段工作经历</text>
+					</view>
+				</view>
 			</view>
 			
 			<view class="contact-info" v-if="userInfo.phone">
@@ -22,27 +29,18 @@
 			</view>
 		</view>
 		
-		<!-- 求职意向 -->
-		<view class="intention-card" v-if="userInfo.jobIntention">
-			<text class="section-title">求职意向</text>
-			<view class="intention-content">
-				<view class="intention-item" v-if="userInfo.jobIntention.position">
-					<text class="item-label">期望职位：</text>
-					<text class="item-value">{{ userInfo.jobIntention.position }}</text>
-				</view>
-				<view class="intention-item" v-if="userInfo.jobIntention.salary">
-					<text class="item-label">期望薪资：</text>
-					<text class="item-value">{{ userInfo.jobIntention.salary }}</text>
-				</view>
-				<view class="intention-item" v-if="userInfo.jobIntention.location">
-					<text class="item-label">期望地点：</text>
-					<text class="item-value">{{ userInfo.jobIntention.location }}</text>
-				</view>
-				<view class="intention-item" v-if="userInfo.jobIntention.industry">
-					<text class="item-label">期望行业：</text>
-					<text class="item-value">{{ userInfo.jobIntention.industry }}</text>
-				</view>
+		<!-- 技能标签 -->
+		<view class="skills-card" v-if="userInfo.skills && userInfo.skills.length">
+			<text class="section-title">技能特长</text>
+			<view class="skills-list">
+				<text class="skill-tag" v-for="(skill, index) in userInfo.skills" :key="index">{{ skill }}</text>
 			</view>
+		</view>
+		
+		<!-- 自我介绍 -->
+		<view class="intro-card" v-if="userInfo.introduction">
+			<text class="section-title">自我介绍</text>
+			<text class="intro-text">{{ userInfo.introduction }}</text>
 		</view>
 		
 		<!-- 工作经历 -->
@@ -65,6 +63,7 @@
 		<!-- 操作按钮 -->
 		<view class="action-bar" v-if="isEmployer">
 			<button class="primary-btn" @click="handleInvite">发送面试邀请</button>
+			<button class="secondary-btn" @click="handleMessage">发送消息</button>
 		</view>
 	</view>
 </template>
@@ -120,15 +119,20 @@ export default {
 		
 		async checkUserRole() {
 			try {
+				console.log("uni.getStorageSync('userInfo')",uni.getStorageSync('userInfo'))
 				const result = await uniCloud.callFunction({
 					name: 'userInformationCenter',
 					data: {
-						action: 'getCurrentUser'
+						action: 'getCurrentUser',
+						data: {
+							userInfo: uni.getStorageSync('userInfo')
+						}
 					}
 				})
+				console.log("result",result)
 				
 				if (result.result.code === 0) {
-					this.isEmployer = result.result.data.role === 'employer'
+					this.isEmployer = result.result.data.userType === 2
 				}
 			} catch (e) {
 				console.error(e)
@@ -146,7 +150,8 @@ export default {
 					data: {
 						action: 'sendInvitation',
 						data: {
-							userId: this.userId
+							userId: this.userId,
+							companyId: uni.getStorageSync('userInfo').userId
 						}
 					}
 				})
@@ -154,6 +159,48 @@ export default {
 				if (result.result.code === 0) {
 					uni.showToast({
 						title: '邀请已发送',
+						icon: 'success'
+					})
+				} else {
+					uni.showToast({
+						title: result.result.msg,
+						icon: 'none'
+					})
+				}
+			} catch (e) {
+				uni.showToast({
+					title: '操作失败，请重试',
+					icon: 'none'
+				})
+			} finally {
+				uni.hideLoading()
+			}
+		},
+		
+		async handleMessage() {
+			uni.showLoading({
+				title: '处理中...'
+			})
+			
+			try {
+				const result = await uniCloud.callFunction({
+					name: 'messageCenter',
+					data: {
+						action: 'sendMessage',
+						data: {
+							receiverId: this.userId,
+							senderId: uni.getStorageSync('userInfo').userId,
+							type: 5,
+							title: '来自企业的消息',
+							isRead: false,
+							content: `您好，我是来自${uni.getStorageSync('userInfo').name}的HR，我对您的简历很感兴趣，想进一步了解一下,请您联系我，我的联系方式是：${uni.getStorageSync('userInfo').phone}。`
+						}
+					}
+				})
+				
+				if (result.result.code === 0) {
+					uni.showToast({
+						title: '消息已发送',
 						icon: 'success'
 					})
 				} else {
@@ -182,7 +229,7 @@ export default {
 	padding: 30rpx;
 }
 
-.info-card, .intention-card, .experience-card {
+.info-card, .skills-card, .intro-card, .experience-card {
 	background-color: #fff;
 	padding: 30rpx;
 	border-radius: 20rpx;
@@ -190,6 +237,34 @@ export default {
 }
 
 .user-header {
+	display: flex;
+	margin-bottom: 30rpx;
+}
+
+.avatar-section {
+	margin-right: 30rpx;
+}
+
+.avatar, .avatar-placeholder {
+	width: 120rpx;
+	height: 120rpx;
+	border-radius: 60rpx;
+}
+
+.avatar-placeholder {
+	background-color: #007AFF;
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 48rpx;
+}
+
+.basic-info {
+	flex: 1;
+}
+
+.name-age {
 	display: flex;
 	align-items: center;
 	margin-bottom: 20rpx;
@@ -202,15 +277,15 @@ export default {
 	margin-right: 20rpx;
 }
 
-.user-age {
+.user-age, .gender {
 	font-size: 28rpx;
 	color: #666;
+	margin-right: 20rpx;
 }
 
 .user-tags {
 	display: flex;
 	flex-wrap: wrap;
-	margin-bottom: 30rpx;
 }
 
 .tag {
@@ -241,25 +316,24 @@ export default {
 	color: #666;
 }
 
-.intention-content {
-	margin-top: 20rpx;
-}
-
-.intention-item {
+.skills-list {
 	display: flex;
-	margin-bottom: 16rpx;
+	flex-wrap: wrap;
+	gap: 20rpx;
 }
 
-.item-label {
+.skill-tag {
+	font-size: 26rpx;
+	color: #007AFF;
+	background-color: rgba(0, 122, 255, 0.1);
+	padding: 10rpx 30rpx;
+	border-radius: 30rpx;
+}
+
+.intro-text {
 	font-size: 28rpx;
 	color: #666;
-	width: 160rpx;
-}
-
-.item-value {
-	font-size: 28rpx;
-	color: #333;
-	flex: 1;
+	line-height: 1.6;
 }
 
 .experience-item {
@@ -275,8 +349,7 @@ export default {
 .exp-header {
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 16rpx;
+	margin-bottom: 20rpx;
 }
 
 .company-name {
@@ -308,22 +381,30 @@ export default {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	background-color: #fff;
 	padding: 20rpx 30rpx;
+	background-color: #fff;
 	box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+	display: flex;
+	gap: 30rpx;
+}
+
+.primary-btn, .secondary-btn {
+	flex: 1;
+	height: 80rpx;
+	border-radius: 40rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 28rpx;
 }
 
 .primary-btn {
 	background-color: #007AFF;
 	color: #fff;
-	border-radius: 10rpx;
-	font-size: 32rpx;
-	padding: 20rpx 0;
-	text-align: center;
-	width: 100%;
 }
 
-.primary-btn:active {
-	opacity: 0.8;
+.secondary-btn {
+	background-color: #f5f5f5;
+	color: #333;
 }
 </style> 

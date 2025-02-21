@@ -1,0 +1,27 @@
+{
+	"bsonType": "object",
+	"required": ["userId", "jobId"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"userId": {
+			"bsonType": "string",
+			"description": "用户ID"
+		},
+		"jobId": {
+			"bsonType": "string",
+			"description": "职位ID"
+		},
+		"createTime": {
+			"bsonType": "timestamp",
+			"description": "创建时间"
+		}
+	}
+} 

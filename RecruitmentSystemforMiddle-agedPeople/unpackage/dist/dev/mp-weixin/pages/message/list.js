@@ -11,6 +11,7 @@ const _sfc_main = {
     };
   },
   onShow() {
+    common_vendor.index.__f__("log", "at pages/message/list.vue:63", "onShow");
     this.userInfo = common_vendor.index.getStorageSync("userInfo");
     if (this.userInfo) {
       this.resetList();
@@ -33,6 +34,7 @@ const _sfc_main = {
         title: "加载中..."
       });
       try {
+        common_vendor.index.__f__("log", "at pages/message/list.vue:89", "this.userInfo", this.userInfo);
         const result = await common_vendor.er.callFunction({
           name: "messageCenter",
           data: {
@@ -44,6 +46,7 @@ const _sfc_main = {
             }
           }
         });
+        common_vendor.index.__f__("log", "at pages/message/list.vue:101", "result", result);
         if (result.result.code === 0) {
           const { list, total } = result.result.data;
           if (loadMore) {
@@ -87,7 +90,7 @@ const _sfc_main = {
           });
           message.isRead = true;
         } catch (e) {
-          common_vendor.index.__f__("error", "at pages/message/list.vue:149", "标记已读失败", e);
+          common_vendor.index.__f__("error", "at pages/message/list.vue:152", "标记已读失败", e);
         }
       }
       if (message.type === 2) {
@@ -115,6 +118,10 @@ const _sfc_main = {
           return "系统消息";
         case 2:
           return "应聘通知";
+        case 4:
+          return "面试邀请";
+        case 5:
+          return "来自企业的消息";
         default:
           return "未知类型";
       }

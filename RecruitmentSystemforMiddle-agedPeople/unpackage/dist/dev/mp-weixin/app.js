@@ -15,6 +15,8 @@ if (!Math) {
   "./pages/404/404.js";
   "./pages/company/detail.js";
   "./pages/user/detail.js";
+  "./pages/profile/edit.js";
+  "./pages/collection/list.js";
 }
 const _sfc_main = {
   onLaunch: function() {

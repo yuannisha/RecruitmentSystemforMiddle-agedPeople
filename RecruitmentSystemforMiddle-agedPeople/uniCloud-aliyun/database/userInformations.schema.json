@@ -31,6 +31,89 @@
 			"description": "姓名/企业名称",
 			"maxLength": 50
 		},
+		"avatar": {
+			"bsonType": "string",
+			"description": "头像URL",
+			"trim": "both"
+		},
+		"gender": {
+			"bsonType": "int",
+			"description": "性别：1-男，2-女",
+			"minimum": 1,
+			"maximum": 2
+		},
+		"age": {
+			"bsonType": "int",
+			"description": "年龄",
+			"minimum": 1,
+			"maximum": 100
+		},
+		"education": {
+			"bsonType": "string",
+			"description": "学历",
+			"maxLength": 50
+		},
+		"workExperience": {
+			"bsonType": "array",
+			"description": "工作经历",
+			"items": {
+				"bsonType": "object",
+				"properties": {
+					"company": {
+						"bsonType": "string",
+						"description": "公司名称"
+					},
+					"position": {
+						"bsonType": "string",
+						"description": "职位"
+					},
+					"startTime": {
+						"bsonType": "string",
+						"description": "开始时间"
+					},
+					"endTime": {
+						"bsonType": "string",
+						"description": "结束时间"
+					},
+					"description": {
+						"bsonType": "string",
+						"description": "工作描述"
+					}
+				}
+			}
+		},
+		"skills": {
+			"bsonType": "array",
+			"description": "技能",
+			"items": {
+				"bsonType": "string"
+			}
+		},
+		"introduction": {
+			"bsonType": "string",
+			"description": "自我介绍",
+			"maxLength": 1000
+		},
+		"registeredCapital": {
+			"bsonType": "string",
+			"description": "注册资金"
+		},
+		"scale": {
+			"bsonType": "string",
+			"description": "企业规模"
+		},
+		"companyDescription": {
+			"bsonType": "string",
+			"description": "企业介绍",
+			"maxLength": 2000
+		},
+		"companyImages": {
+			"bsonType": "array",
+			"description": "企业图片",
+			"items": {
+				"bsonType": "string"
+			}
+		},
 		"createTime": {
 			"bsonType": "timestamp",
 			"description": "创建时间"

@@ -15,11 +15,15 @@
 			<view class="user-card">
 				<view class="user-info">
 					<view class="avatar">
-						<text class="avatar-text">{{ userInfo.name[0] }}</text>
+						<image v-if="userInfo.avatar" :src="userInfo.avatar" mode="aspectFill" class="avatar-image"></image>
+						<text v-else class="avatar-text">{{ userInfo.name[0] }}</text>
 					</view>
 					<view class="info">
 						<text class="name">{{ userInfo.name }}</text>
 						<text class="type">{{ userInfo.userType === 1 ? '求职者' : '企业' }}</text>
+					</view>
+					<view class="edit-btn" @click="goToEdit">
+						<text>编辑资料</text>
 					</view>
 				</view>
 			</view>
@@ -30,6 +34,10 @@
 				<block v-if="userInfo.userType === 1">
 					<view class="menu-item" @click="goToApplicationList">
 						<text class="menu-title">我的申请</text>
+						<text class="menu-arrow">></text>
+					</view>
+					<view class="menu-item" @click="goToCollectionList">
+						<text class="menu-title">我的收藏</text>
 						<text class="menu-arrow">></text>
 					</view>
 				</block>
@@ -70,6 +78,7 @@ export default {
 	},
 	onShow() {
 		this.userInfo = uni.getStorageSync('userInfo')
+        console.log("userInfo",this.userInfo)
 	},
 	methods: {
 		goToLogin() {
@@ -112,6 +121,18 @@ export default {
 						})
 					}
 				}
+			})
+		},
+		
+		goToEdit() {
+			uni.navigateTo({
+				url: '/pages/profile/edit'
+			})
+		},
+		
+		goToCollectionList() {
+			uni.navigateTo({
+				url: '/pages/collection/list'
 			})
 		}
 	}
@@ -230,5 +251,23 @@ export default {
 .menu-arrow {
 	font-size: 32rpx;
 	color: #999;
+}
+
+.avatar-image {
+	width: 100%;
+	height: 100%;
+	border-radius: 60rpx;
+}
+
+.edit-btn {
+	padding: 10rpx 30rpx;
+	background-color: #f5f5f5;
+	border-radius: 30rpx;
+	margin-left: auto;
+}
+
+.edit-btn text {
+	font-size: 28rpx;
+	color: #007AFF;
 }
 </style> 

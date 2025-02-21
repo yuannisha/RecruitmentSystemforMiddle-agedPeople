@@ -47,17 +47,22 @@ const _sfc_main = {
     },
     async checkUserRole() {
       try {
+        common_vendor.index.__f__("log", "at pages/user/detail.vue:122", "uni.getStorageSync('userInfo')", common_vendor.index.getStorageSync("userInfo"));
         const result = await common_vendor.er.callFunction({
           name: "userInformationCenter",
           data: {
-            action: "getCurrentUser"
+            action: "getCurrentUser",
+            data: {
+              userInfo: common_vendor.index.getStorageSync("userInfo")
+            }
           }
         });
+        common_vendor.index.__f__("log", "at pages/user/detail.vue:132", "result", result);
         if (result.result.code === 0) {
-          this.isEmployer = result.result.data.role === "employer";
+          this.isEmployer = result.result.data.userType === 2;
         }
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/user/detail.vue:134", e);
+        common_vendor.index.__f__("error", "at pages/user/detail.vue:138", e);
       }
     },
     async handleInvite() {
@@ -70,7 +75,8 @@ const _sfc_main = {
           data: {
             action: "sendInvitation",
             data: {
-              userId: this.userId
+              userId: this.userId,
+              companyId: common_vendor.index.getStorageSync("userInfo").userId
             }
           }
         });
@@ -93,53 +99,93 @@ const _sfc_main = {
       } finally {
         common_vendor.index.hideLoading();
       }
+    },
+    async handleMessage() {
+      common_vendor.index.showLoading({
+        title: "处理中..."
+      });
+      try {
+        const result = await common_vendor.er.callFunction({
+          name: "messageCenter",
+          data: {
+            action: "sendMessage",
+            data: {
+              receiverId: this.userId,
+              senderId: common_vendor.index.getStorageSync("userInfo").userId,
+              type: 5,
+              title: "来自企业的消息",
+              isRead: false,
+              content: `您好，我是来自${common_vendor.index.getStorageSync("userInfo").name}的HR，我对您的简历很感兴趣，想进一步了解一下,请您联系我，我的联系方式是：${common_vendor.index.getStorageSync("userInfo").phone}。`
+            }
+          }
+        });
+        if (result.result.code === 0) {
+          common_vendor.index.showToast({
+            title: "消息已发送",
+            icon: "success"
+          });
+        } else {
+          common_vendor.index.showToast({
+            title: result.result.msg,
+            icon: "none"
+          });
+        }
+      } catch (e) {
+        common_vendor.index.showToast({
+          title: "操作失败，请重试",
+          icon: "none"
+        });
+      } finally {
+        common_vendor.index.hideLoading();
+      }
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: common_vendor.t($data.userInfo.name),
-    b: $data.userInfo.age
+    a: $data.userInfo.avatar
+  }, $data.userInfo.avatar ? {
+    b: $data.userInfo.avatar
+  } : {
+    c: common_vendor.t($data.userInfo.name[0])
+  }, {
+    d: common_vendor.t($data.userInfo.name),
+    e: $data.userInfo.age
   }, $data.userInfo.age ? {
-    c: common_vendor.t($data.userInfo.age)
+    f: common_vendor.t($data.userInfo.age)
   } : {}, {
-    d: $data.userInfo.education
+    g: $data.userInfo.gender
+  }, $data.userInfo.gender ? {
+    h: common_vendor.t($data.userInfo.gender === 1 ? "男" : "女")
+  } : {}, {
+    i: $data.userInfo.education
   }, $data.userInfo.education ? {
-    e: common_vendor.t($data.userInfo.education)
+    j: common_vendor.t($data.userInfo.education)
   } : {}, {
-    f: $data.userInfo.experience
-  }, $data.userInfo.experience ? {
-    g: common_vendor.t($data.userInfo.experience)
-  } : {}, {
-    h: $data.userInfo.location
-  }, $data.userInfo.location ? {
-    i: common_vendor.t($data.userInfo.location)
-  } : {}, {
-    j: $data.userInfo.phone
-  }, $data.userInfo.phone ? {
-    k: common_vendor.t($data.userInfo.phone)
-  } : {}, {
-    l: $data.userInfo.jobIntention
-  }, $data.userInfo.jobIntention ? common_vendor.e({
-    m: $data.userInfo.jobIntention.position
-  }, $data.userInfo.jobIntention.position ? {
-    n: common_vendor.t($data.userInfo.jobIntention.position)
-  } : {}, {
-    o: $data.userInfo.jobIntention.salary
-  }, $data.userInfo.jobIntention.salary ? {
-    p: common_vendor.t($data.userInfo.jobIntention.salary)
-  } : {}, {
-    q: $data.userInfo.jobIntention.location
-  }, $data.userInfo.jobIntention.location ? {
-    r: common_vendor.t($data.userInfo.jobIntention.location)
-  } : {}, {
-    s: $data.userInfo.jobIntention.industry
-  }, $data.userInfo.jobIntention.industry ? {
-    t: common_vendor.t($data.userInfo.jobIntention.industry)
-  } : {}) : {}, {
-    v: $data.userInfo.workExperience && $data.userInfo.workExperience.length
+    k: $data.userInfo.workExperience && $data.userInfo.workExperience.length
   }, $data.userInfo.workExperience && $data.userInfo.workExperience.length ? {
-    w: common_vendor.f($data.userInfo.workExperience, (exp, index, i0) => {
+    l: common_vendor.t($data.userInfo.workExperience.length)
+  } : {}, {
+    m: $data.userInfo.phone
+  }, $data.userInfo.phone ? {
+    n: common_vendor.t($data.userInfo.phone)
+  } : {}, {
+    o: $data.userInfo.skills && $data.userInfo.skills.length
+  }, $data.userInfo.skills && $data.userInfo.skills.length ? {
+    p: common_vendor.f($data.userInfo.skills, (skill, index, i0) => {
+      return {
+        a: common_vendor.t(skill),
+        b: index
+      };
+    })
+  } : {}, {
+    q: $data.userInfo.introduction
+  }, $data.userInfo.introduction ? {
+    r: common_vendor.t($data.userInfo.introduction)
+  } : {}, {
+    s: $data.userInfo.workExperience && $data.userInfo.workExperience.length
+  }, $data.userInfo.workExperience && $data.userInfo.workExperience.length ? {
+    t: common_vendor.f($data.userInfo.workExperience, (exp, index, i0) => {
       return {
         a: common_vendor.t(exp.company),
         b: common_vendor.t(exp.startTime),
@@ -150,9 +196,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     })
   } : {}, {
-    x: $data.isEmployer
+    v: $data.isEmployer
   }, $data.isEmployer ? {
-    y: common_vendor.o((...args) => $options.handleInvite && $options.handleInvite(...args))
+    w: common_vendor.o((...args) => $options.handleInvite && $options.handleInvite(...args)),
+    x: common_vendor.o((...args) => $options.handleMessage && $options.handleMessage(...args))
   } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);

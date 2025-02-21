@@ -12,7 +12,9 @@
     "pages/message/list",
     "pages/404/404",
     "pages/company/detail",
-    "pages/user/detail"
+    "pages/user/detail",
+    "pages/profile/edit",
+    "pages/collection/list"
   ],
   "window": {
     "navigationBarTextStyle": "white",

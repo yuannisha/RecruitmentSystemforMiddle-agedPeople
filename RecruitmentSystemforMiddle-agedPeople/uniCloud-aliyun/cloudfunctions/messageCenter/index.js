@@ -118,7 +118,7 @@ async function readMessage(data) {
 
 // 发送面试邀请
 async function sendInvitation(data) {
-	const { userId } = data
+	const { userId , companyId } = data
 	
 	if (!userId) {
 		return {
@@ -129,7 +129,7 @@ async function sendInvitation(data) {
 	
 	try {
 		// 获取当前登录用户（企业）信息
-		const currentUser = await db_userInformations.doc(context.userInfo.userId).get()
+		const currentUser = await db_userInformations.doc(companyId).get()
 		if (!currentUser.data || !currentUser.data.length) {
 			return {
 				code: 1,
@@ -141,13 +141,13 @@ async function sendInvitation(data) {
 		
 		// 创建面试邀请消息
 		const message = {
-			type: 'invitation',
+			type: 4,
 			title: '面试邀请',
-			content: `${company.name}向您发送了面试邀请，请及时查看并回复。`,
-			fromId: company._id,
-			toId: userId,
+			content: `${company.name}向您发送了面试邀请，请及时查看并回复，联系方式：${company.phone}。`,
+			senderId: company._id,
+			receiverId: userId,
 			createTime: Date.now(),
-			status: 'unread'
+			isRead: false
 		}
 		
 		await db_messages.add(message)
@@ -157,6 +157,7 @@ async function sendInvitation(data) {
 			msg: '邀请发送成功'
 		}
 	} catch (e) {
+		console.log("e",e)
 		return {
 			code: 1,
 			msg: '邀请发送失败'
